@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <title>Lista de productos</title>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Lista de productos</h2>
+        <!-- Botón cerrar sesión -->
+        <form th:action="@{/logout}" method="post" style="margin: 0;">
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-sign-out-alt"></i> Cerrar sesión
+            </button>
+        </form>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div th:if="${param.success}">
+        <div class="alert alert-success">Producto guardado correctamente.</div>
+    </div>
+
+    <form method="get">
+        <input type="text" name="buscar" th:value="${buscar}" placeholder="Buscar..." class="form-control mb-2"/>
+        <button type="submit" class="btn btn-primary mb-3">Buscar</button>
+    </form>
+    <a class="btn btn-success mb-3" th:href="@{/productos/nuevo}"><i class="fa fa-plus"></i> Nuevo Producto</a>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Categoría</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${pagina.content}">
+            <td th:text="${p.nombre}"></td>
+            <td th:text="${p.descripcion}"></td>
+            <td th:text="${#numbers.formatDecimal(p.precio, 1, 'COMMA', 2, 'POINT')} + ' ₲'"></td>
+            <td th:text="${p.categoria != null ? p.categoria.nombre : 'Sin categoría'}"></td>
+            <td>
+                <a th:href="@{/productos/editar/{id}(id=${p.id})}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
+                <a th:href="@{/productos/eliminar/{id}(id=${p.id})}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div>
+        <span th:text="'Página ' + ${pagina.number + 1} + ' de ' + ${pagina.totalPages}"></span>
+    </div>
+</div>
+</body>
+</html>
